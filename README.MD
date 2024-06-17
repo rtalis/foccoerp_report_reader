@@ -1,7 +1,8 @@
 # FoccoERP Quotations Report XML Reader
 
 Este é um leitor rápido e simples para o relatório de cotações do FoccoERP em XML.
-<img src="https://raw.githubusercontent.com/rtalis/foccoerp_report_reader/main/templates/image.png" width="350" title="ilustração">
+
+<img src="https://raw.githubusercontent.com/rtalis/foccoerp_report_reader/main/templates/image.png" width="600" title="ilustração">
 ## Como usar
 
 1. Clone este repositório para sua máquina local usando `git clone`.
