@@ -62,7 +62,7 @@ def upload_file():
         search_by = request.form.get('search_by')
         data = search_cod_item(os.path.join(app.config['UPLOAD_FOLDER'], filename), search_value, search_by) if search_value and search_by else None
     
-    return render_template('upload.html', data=data, search_term=search_value.upper() if search_value else None)
+    return render_template('main.html', data=data, search_term=search_value.upper() if search_value else None)
 
 if __name__ == '__main__':
     app.run(debug=True)
