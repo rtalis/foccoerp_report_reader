@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Upload XML</title>
+    <br>
+    <br\>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f0f0f0;
+            }
+
+            form {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 10px;
+                height: 30px;
+                width: 300px;
+                margin: auto;
+                justify-content: center;
+                white-space: nowrap;
+            }
+
+            form label {
+                font-weight: bold;
+            }
+
+            form input[type="submit"] {
+                background-color: #4CAF50;
+                /* Green */
+                color: white;
+                padding: 10px 15px;
+                border: none;
+                cursor: pointer;
+                width: 100%;
+                opacity: 0.9;
+                box-shadow: inset 0 0 0 1px #fff;
+                border: #ddd;
+            }
+
+            form input[type="submit"]:hover {
+                opacity: 1;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            th,
+            td {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+
+            tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+
+            th {
+                padding-top: 12px;
+                padding-bottom: 12px;
+                text-align: left;
+                background-color: #4CAF50;
+                color: white;
+            }
+
+            .alert {
+                padding: 20px;
+                background-color: #f44336;
+                /* Red */
+                color: white;
+                opacity: 1;
+                transition: opacity 0.6s;
+                /* 600ms to fade out */
+            }
+
+            .alert.success {
+                background-color: #4CAF50;
+            }
+
+            /* Green */
+            .alert.info {
+                background-color: #2196F3;
+            }
+
+            /* Blue */
+            .alert.warning {
+                background-color: #ff9800;
+            }
+
+            /* Orange */
+        </style>
+</head>
+
+<body>
+    <form method="POST" enctype="multipart/form-data">
+        <label for="file">Selecione o arquivo XML:</label>
+        <input type="file" id="file" name="file" accept=".xml">
+        <label for="search_value">Valor de pesquisa:</label>
+        <input type="text" id="search_value" name="search_value">
+        <label for="search_by">Pesquisar por:</label>
+        <select id="search_by" name="search_by">
+            <option value="COD_ITEM">COD_ITEM</option>
+            <option value="DESC_ITEM">DESC_ITEM</option>
+        </select>
+        <input type="hidden" id="search_term" name="search_term" value="{{ search_value }}">
+        <input type="submit" value="Pesquisar">
+    </form>
+    <!-- rest of your upload form -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alert alert-warning">
+        {% for message in messages %}
+        {{ message }}
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    {% if data %}
+    <h2>Resultados para "{{ search_term }}":</h2>
+    <table>
+        <tr>
+            <th>Dt_Emissao</th>
+            <th>Fornecedor</th>
+            <th>Desc item</th>
+            <th>Unid_Med</th>
+            <th>Qtde</th>
+            <th>Preco_Unitario</th>
+        </tr>
+        {% set ns = namespace(last_cod_cot='first') %}
+        {{last_cod_cot}}
+        {% for item in data %}
+
+        {% if ns.last_cod_cot != '' and ns.last_cod_cot != item[0] or ns.last_cod_cot == 'first' %}
+        <tr>
+            <td colspan="6" style="background-color: rgba(212, 212, 212, 0.541); text-align: center;">COTAÇÃO
+                {{item[0]}}</td> <!-- Change the color to black -->
+        </tr>
+        {% endif %}
+        <tr>
+            <td>{{ item[1].strftime('%d/%m/%Y') }}</td>
+            <td>{{ item[2] }}</td>
+            <td>{{ item[3] }}</td>
+            <td>{{ item[4] }}</td>
+            <td>{{ item[5] }}</td>
+            <td>{{ item[6] }}</td>
+        </tr>
+        {% set ns.last_cod_cot = item[0] %}
+
+        {% endfor %}
+    </table>
+    {% endif %}
+
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function (event) {
+            event.preventDefault();  // Prevent the form from being submitted
+            localStorage.setItem('search_value', document.getElementById('search_value').value);
+            localStorage.setItem('search_by', document.getElementById('search_by').value);
+            event.target.submit();  // Manually submit the form
+        });
+
+        window.onload = function () {
+            if (localStorage.getItem('search_value')) {
+                document.getElementById('search_value').value = localStorage.getItem('search_value');
+            }
+            if (localStorage.getItem('search_by')) {
+                document.getElementById('search_by').value = localStorage.getItem('search_by');
+            }
+        };
+    </script>
+
+</body>
+
+</html>
